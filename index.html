@@ -10,48 +10,58 @@
   <style>
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
+    /* ===== PALETTE ===== */
     :root {
-      --bg: #07090f;
-      --bg2: #0d1120;
-      --card: rgba(255,255,255,0.04);
-      --card-border: rgba(255,255,255,0.08);
-      --text: #b8c8e0;
-      --muted: #4a5a74;
-      --head: #f0f6ff;
-      --accent: #3b82f6;
-      --accent2: #06b6d4;
-      --green: #22c55e;
+      --bg:    #0a0f1e;
+      --bg2:   #111827;
+      --card:  rgba(255,255,255,0.05);
+      --card-border: rgba(255,255,255,0.09);
+      --text:  #a8bbd4;
+      --muted: #5a6e88;
+      --head:  #f0f8ff;
+      --blue:  #0099ff;
+      --cyan:  #06d6a0;
+      --cta:   #f97316;   /* orange — urgence / WhatsApp */
+      --green: #10b981;
+      --red:   #ef4444;
+      --purple:#7c3aed;
     }
     body.light {
-      --bg: #eef2fb;
-      --bg2: #ffffff;
-      --card: rgba(255,255,255,0.85);
-      --card-border: rgba(59,130,246,0.12);
-      --text: #374151;
+      --bg:    #f0f6ff;
+      --bg2:   #ffffff;
+      --card:  rgba(255,255,255,0.92);
+      --card-border: rgba(0,153,255,0.12);
+      --text:  #374151;
       --muted: #9ca3af;
-      --head: #0a1628;
-      --accent: #2563eb;
-      --accent2: #0891b2;
-      --green: #16a34a;
+      --head:  #0a1628;
+      --blue:  #0077cc;
+      --cyan:  #059669;
+      --cta:   #ea6c00;
+      --green: #059669;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior:smooth; }
     body {
-      font-family: 'Space Grotesk', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.65;
-      overflow-x: hidden;
-      transition: background 0.4s, color 0.4s;
+      font-family:'Space Grotesk',sans-serif;
+      background:var(--bg); color:var(--text);
+      line-height:1.65; overflow-x:hidden;
+      transition:background .4s, color .4s;
     }
-    h1,h2,h3,h4 { font-family: 'Syne', sans-serif; color: var(--head); }
-    a { text-decoration: none; color: inherit; }
+    h1,h2,h3,h4 { font-family:'Syne',sans-serif; color:var(--head); }
+    a { text-decoration:none; color:inherit; }
 
     /* GRAIN */
     body::after {
       content:''; position:fixed; inset:0;
-      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-      pointer-events:none; z-index:9999; opacity:.5;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events:none; z-index:9999; opacity:.6;
+    }
+
+    /* SCROLL PROGRESS */
+    #progress-bar {
+      position:fixed; top:0; left:0; height:3px; z-index:9998;
+      background:linear-gradient(90deg,var(--cta),var(--blue),var(--cyan));
+      width:0%; transition:width .1s linear;
     }
 
     /* ===== NAV ===== */
@@ -59,151 +69,163 @@
       position:fixed; top:0; left:0; right:0; z-index:200;
       display:flex; align-items:center; justify-content:space-between;
       padding:16px 48px;
-      background:rgba(7,9,15,0.72);
+      background:rgba(10,15,30,0.75);
       backdrop-filter:blur(24px);
       border-bottom:1px solid var(--card-border);
-      transition:background 0.4s;
+      transition:background .4s;
     }
-    body.light nav { background:rgba(238,242,251,0.85); }
+    body.light nav { background:rgba(240,246,255,0.88); }
 
     .nav-brand {
       font-family:'Syne',sans-serif; font-size:1.15rem; font-weight:800;
       color:var(--head); display:flex; align-items:center; gap:10px;
     }
     .nav-dot {
-      width:8px; height:8px; border-radius:50%;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
-      box-shadow:0 0 10px var(--accent);
+      width:9px; height:9px; border-radius:50%;
+      background:linear-gradient(135deg,var(--cta),var(--blue));
+      box-shadow:0 0 12px var(--cta);
+      animation:dot-pulse 2s ease-in-out infinite;
+    }
+    @keyframes dot-pulse {
+      0%,100%{box-shadow:0 0 8px var(--cta)} 50%{box-shadow:0 0 20px var(--cta)}
     }
     .nav-links { display:flex; gap:28px; list-style:none; }
     .nav-links a {
       font-size:.82rem; font-weight:600; letter-spacing:.06em;
       text-transform:uppercase; color:var(--muted); transition:color .2s;
     }
-    .nav-links a:hover { color:var(--accent); }
-
+    .nav-links a:hover, .nav-links a.active { color:var(--blue); }
     .nav-right { display:flex; align-items:center; gap:10px; }
-
     .theme-btn {
       width:40px; height:40px; border-radius:50%;
-      border:1px solid var(--card-border);
-      background:var(--card); color:var(--text);
-      font-size:15px; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      transition:all .3s;
+      border:1px solid var(--card-border); background:var(--card);
+      color:var(--text); font-size:15px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; transition:all .3s;
     }
-    .theme-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .theme-btn:hover { background:var(--blue); color:#fff; border-color:var(--blue); }
 
     /* Hamburger */
-    .hamburger {
-      display:none; flex-direction:column; gap:5px;
-      cursor:pointer; background:none; border:none; padding:4px;
-    }
-    .hamburger span {
-      display:block; width:24px; height:2px;
-      background:var(--head); border-radius:2px;
-      transition:all .3s;
-    }
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+    .hamburger span { display:block; width:24px; height:2px; background:var(--head); border-radius:2px; transition:all .3s; }
     .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity:0; }
     .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
 
-    /* Mobile menu */
     .mobile-menu {
-      display:none; position:fixed;
-      top:65px; left:0; right:0; z-index:190;
-      background:rgba(7,9,15,0.97);
-      backdrop-filter:blur(24px);
+      display:none; position:fixed; top:65px; left:0; right:0; z-index:190;
+      background:rgba(10,15,30,0.97); backdrop-filter:blur(24px);
       border-bottom:1px solid var(--card-border);
-      padding:20px 24px 28px;
-      flex-direction:column; gap:4px;
+      padding:20px 24px 28px; flex-direction:column; gap:4px;
     }
-    body.light .mobile-menu { background:rgba(238,242,251,0.97); }
+    body.light .mobile-menu { background:rgba(240,246,255,0.97); }
     .mobile-menu.open { display:flex; }
-    .mobile-menu a {
-      font-size:1rem; font-weight:600; color:var(--text);
-      padding:12px 0; border-bottom:1px solid var(--card-border);
-      letter-spacing:.04em;
-      transition:color .2s;
-    }
-    .mobile-menu a:hover { color:var(--accent); }
+    .mobile-menu a { font-size:1rem; font-weight:600; color:var(--text); padding:12px 0; border-bottom:1px solid var(--card-border); transition:color .2s; }
+    .mobile-menu a:hover { color:var(--blue); }
     .mobile-menu a:last-child { border-bottom:none; }
 
     /* ===== HERO ===== */
     #home {
-      min-height:100vh;
-      display:flex; align-items:center; justify-content:center;
-      position:relative; overflow:hidden;
-      padding:130px 40px 90px;
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      position:relative; overflow:hidden; padding:130px 40px 90px;
     }
     .grid-bg {
       position:absolute; inset:0;
       background-image:
-        linear-gradient(rgba(59,130,246,.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(59,130,246,.05) 1px, transparent 1px);
+        linear-gradient(rgba(0,153,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,153,255,.06) 1px, transparent 1px);
       background-size:56px 56px;
       mask-image:radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 100%);
+      will-change:transform;
     }
     .orb { position:absolute; border-radius:50%; filter:blur(90px); pointer-events:none; }
     .orb1 {
-      width:600px; height:600px;
-      background:radial-gradient(circle, rgba(59,130,246,.14) 0%, transparent 70%);
-      top:-150px; left:-150px;
-      animation:drift 9s ease-in-out infinite alternate;
+      width:650px; height:650px;
+      background:radial-gradient(circle, rgba(0,153,255,.16) 0%, transparent 70%);
+      top:-160px; left:-160px; animation:drift 9s ease-in-out infinite alternate;
     }
     .orb2 {
-      width:500px; height:500px;
-      background:radial-gradient(circle, rgba(6,182,212,.1) 0%, transparent 70%);
-      bottom:-100px; right:-100px;
-      animation:drift 12s ease-in-out infinite alternate-reverse;
+      width:550px; height:550px;
+      background:radial-gradient(circle, rgba(6,214,160,.12) 0%, transparent 70%);
+      bottom:-100px; right:-100px; animation:drift 12s ease-in-out infinite alternate-reverse;
     }
-    @keyframes drift {
-      from { transform:translate(0,0); }
-      to   { transform:translate(50px,40px); }
+    .orb3 {
+      width:300px; height:300px;
+      background:radial-gradient(circle, rgba(249,115,22,.1) 0%, transparent 70%);
+      top:40%; left:60%; animation:drift 7s ease-in-out infinite alternate;
     }
-    .hero-content { position:relative; z-index:1; text-align:center; max-width:800px; }
+    @keyframes drift { from{transform:translate(0,0)} to{transform:translate(50px,40px)} }
+
+    .hero-content { position:relative; z-index:1; text-align:center; max-width:820px; }
     .badge {
       display:inline-flex; align-items:center; gap:8px;
-      background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.25);
-      color:#93c5fd; font-size:.75rem; font-weight:700; letter-spacing:.1em;
+      background:rgba(0,153,255,.1); border:1px solid rgba(0,153,255,.3);
+      color:#60c8ff; font-size:.75rem; font-weight:700; letter-spacing:.1em;
       text-transform:uppercase; padding:7px 18px; border-radius:100px; margin-bottom:30px;
     }
     .pulse-dot {
       width:7px; height:7px; border-radius:50%;
-      background:#22c55e; box-shadow:0 0 8px #22c55e;
-      animation:pulse 2s ease-in-out infinite;
+      background:var(--green); box-shadow:0 0 8px var(--green);
+      animation:pulse-a 2s ease-in-out infinite;
     }
-    @keyframes pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50% { opacity:.6; transform:scale(.8); }
-    }
+    @keyframes pulse-a { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
     .hero-content h1 {
-      font-size:clamp(2.6rem,6.5vw,5.2rem);
-      line-height:1.06; letter-spacing:-.02em; margin-bottom:22px;
+      font-size:clamp(2.6rem,6.5vw,5.4rem);
+      line-height:1.05; letter-spacing:-.02em; margin-bottom:22px;
     }
-    .grad {
-      background:linear-gradient(135deg,#60a5fa 0%,#a5f3fc 55%,#818cf8 100%);
+    .grad-orange {
+      background:linear-gradient(135deg,#f97316 0%,#fbbf24 60%,#f97316 100%);
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
     }
-    body.light .grad {
-      background:linear-gradient(135deg,#1d4ed8,#0891b2);
+    body.light .grad-orange {
+      background:linear-gradient(135deg,#ea6c00,#d97706);
       -webkit-background-clip:text; -webkit-text-fill-color:transparent;
     }
+    .typed-cursor {
+      display:inline-block; width:3px; height:.85em;
+      background:var(--cta); margin-left:4px;
+      vertical-align:middle; border-radius:2px;
+      animation:blink .7s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
     .hero-sub {
       font-size:1.1rem; color:var(--muted); margin-bottom:44px;
-      max-width:500px; margin-left:auto; margin-right:auto;
+      max-width:520px; margin-left:auto; margin-right:auto;
     }
-    .hero-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+    .hero-ctas { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:52px; }
 
-    /* BUTTONS */
+    /* Trust badges */
+    .hero-trust {
+      display:flex; justify-content:center; gap:20px; flex-wrap:wrap;
+    }
+    .trust-badge {
+      display:flex; align-items:center; gap:8px;
+      background:rgba(255,255,255,.05); border:1px solid var(--card-border);
+      border-radius:100px; padding:8px 16px;
+      font-size:.78rem; font-weight:600; color:var(--text);
+    }
+    .trust-badge i { color:var(--green); font-size:.8rem; }
+
+    /* ===== BUTTONS ===== */
+    .btn-cta {
+      display:inline-flex; align-items:center; gap:10px;
+      background:var(--cta); color:#fff;
+      font-family:'Space Grotesk',sans-serif; font-size:.95rem; font-weight:700;
+      padding:15px 30px; border-radius:14px; border:none; cursor:pointer;
+      box-shadow:0 4px 28px rgba(249,115,22,.45); transition:all .3s;
+    }
+    .btn-cta:hover { transform:translateY(-2px); box-shadow:0 8px 40px rgba(249,115,22,.65); }
+
     .btn-primary {
       display:inline-flex; align-items:center; gap:10px;
-      background:var(--accent); color:#fff;
+      background:var(--blue); color:#fff;
       font-family:'Space Grotesk',sans-serif; font-size:.9rem; font-weight:700;
       padding:14px 28px; border-radius:12px; border:none; cursor:pointer;
-      box-shadow:0 0 30px rgba(59,130,246,.4); transition:all .3s;
+      box-shadow:0 4px 24px rgba(0,153,255,.35); transition:all .3s;
     }
-    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 0 45px rgba(59,130,246,.6); }
+    .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 36px rgba(0,153,255,.55); }
+
     .btn-ghost {
       display:inline-flex; align-items:center; gap:10px;
       background:transparent; color:var(--head);
@@ -211,37 +233,25 @@
       padding:14px 28px; border-radius:12px;
       border:1px solid var(--card-border); cursor:pointer; transition:all .3s;
     }
-    .btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
+    .btn-ghost:hover { border-color:var(--blue); color:var(--blue); }
 
     /* ===== STATS ===== */
     .stats-bar {
       display:flex; justify-content:center; gap:60px; flex-wrap:wrap;
-      padding:36px 40px;
-      background:var(--bg2);
-      border-top:1px solid var(--card-border);
-      border-bottom:1px solid var(--card-border);
+      padding:36px 40px; background:var(--bg2);
+      border-top:1px solid var(--card-border); border-bottom:1px solid var(--card-border);
     }
     .stat { text-align:center; }
-    .stat-num {
-      font-family:'Syne',sans-serif; font-size:2rem; font-weight:800;
-      color:var(--head); display:block;
-    }
-    .stat-num .ac { color:var(--accent); }
+    .stat-num { font-family:'Syne',sans-serif; font-size:2rem; font-weight:800; color:var(--head); display:block; }
+    .stat-num .ac { color:var(--cta); }
     .stat-label { font-size:.78rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
 
-    /* ===== SECTION LAYOUT ===== */
+    /* ===== SECTION ===== */
     .section { max-width:1160px; margin:0 auto; padding:90px 40px; }
-    .section-tag {
-      display:inline-block; font-size:.72rem; font-weight:700;
-      letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:14px;
-    }
+    .section-tag { display:inline-block; font-size:.72rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--blue); margin-bottom:14px; }
     .section-title { font-size:clamp(1.9rem,4vw,3rem); line-height:1.1; letter-spacing:-.02em; margin-bottom:16px; }
     .section-sub { font-size:1rem; color:var(--muted); max-width:500px; margin-bottom:56px; }
-
-    /* Section inline CTA */
-    .section-cta {
-      margin-top:48px; text-align:center;
-    }
+    .section-cta { margin-top:48px; text-align:center; }
 
     /* ===== SERVICES ===== */
     .services-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px; }
@@ -249,48 +259,59 @@
       background:var(--card); border:1px solid var(--card-border);
       border-radius:20px; padding:36px 28px;
       position:relative; overflow:hidden; transition:all .4s;
+      border-top:3px solid transparent;
     }
-    .service-card::before {
-      content:''; position:absolute; inset:0;
-      background:linear-gradient(135deg,rgba(59,130,246,.06) 0%,transparent 60%);
-      opacity:0; transition:opacity .4s;
-    }
-    .service-card:hover { transform:translateY(-6px); border-color:rgba(59,130,246,.3); }
-    .service-card:hover::before { opacity:1; }
+    .service-card:nth-child(1) { border-top-color:var(--blue); }
+    .service-card:nth-child(2) { border-top-color:#ef4444; }
+    .service-card:nth-child(3) { border-top-color:var(--cyan); }
+    .service-card:nth-child(4) { border-top-color:var(--green); }
+    .service-card:hover { transform:translateY(-8px); box-shadow:0 20px 40px rgba(0,0,0,.2); }
     .service-icon {
-      width:54px; height:54px; border-radius:14px;
-      background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.2);
+      width:58px; height:58px; border-radius:16px;
       display:flex; align-items:center; justify-content:center;
-      font-size:1.4rem; color:var(--accent); margin-bottom:22px;
+      font-size:1.6rem; margin-bottom:22px;
+      animation:bob 3s ease-in-out infinite;
     }
+    .service-card:nth-child(1) .service-icon { background:rgba(0,153,255,.12); color:var(--blue); }
+    .service-card:nth-child(2) .service-icon { background:rgba(239,68,68,.12); color:#ef4444; }
+    .service-card:nth-child(3) .service-icon { background:rgba(6,214,160,.12); color:var(--cyan); }
+    .service-card:nth-child(4) .service-icon { background:rgba(16,185,129,.12); color:var(--green); }
+    .service-card:nth-child(2) .service-icon { animation-delay:.4s; }
+    .service-card:nth-child(3) .service-icon { animation-delay:.8s; }
+    .service-card:nth-child(4) .service-icon { animation-delay:1.2s; }
+    @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
     .service-card h3 { font-size:1.05rem; margin-bottom:10px; }
     .service-card p { font-size:.88rem; color:var(--muted); line-height:1.6; }
     .note-pill {
       display:inline-flex; align-items:center; gap:10px; margin-top:44px;
-      background:rgba(34,197,94,.08); border:1px solid rgba(34,197,94,.2);
-      color:#4ade80; padding:10px 22px; border-radius:100px;
-      font-size:.82rem; font-weight:600;
+      background:rgba(16,185,129,.08); border:1px solid rgba(16,185,129,.2);
+      color:#34d399; padding:10px 22px; border-radius:100px; font-size:.82rem; font-weight:600;
     }
-    body.light .note-pill { color:#16a34a; background:rgba(22,163,74,.08); border-color:rgba(22,163,74,.2); }
+    body.light .note-pill { color:#059669; background:rgba(5,150,105,.08); border-color:rgba(5,150,105,.2); }
+
+    /* WAVE */
+    .wave-divider { display:block; width:100%; overflow:hidden; line-height:0; }
+    .wave-divider svg { display:block; width:100%; }
 
     /* ===== HOW IT WORKS ===== */
     #how { background:var(--bg2); border-top:1px solid var(--card-border); border-bottom:1px solid var(--card-border); }
     .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; position:relative; }
     .steps::before {
-      content:'';
-      position:absolute; top:36px; left:calc(16.66% + 20px); right:calc(16.66% + 20px);
-      height:1px; background:linear-gradient(90deg, var(--accent), var(--accent2));
-      opacity:.3;
+      content:''; position:absolute; top:36px;
+      left:calc(16.66% + 20px); right:calc(16.66% + 20px);
+      height:2px; background:linear-gradient(90deg,var(--cta),var(--blue),var(--cyan));
+      opacity:.4;
     }
     .step { text-align:center; position:relative; }
     .step-num {
       width:72px; height:72px; border-radius:50%;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
       display:flex; align-items:center; justify-content:center;
       font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800;
       color:#fff; margin:0 auto 20px;
-      box-shadow:0 0 24px rgba(59,130,246,.35);
     }
+    .step:nth-child(1) .step-num { background:linear-gradient(135deg,var(--cta),#fbbf24); box-shadow:0 0 24px rgba(249,115,22,.4); }
+    .step:nth-child(2) .step-num { background:linear-gradient(135deg,var(--blue),var(--cyan)); box-shadow:0 0 24px rgba(0,153,255,.4); }
+    .step:nth-child(3) .step-num { background:linear-gradient(135deg,var(--green),var(--cyan)); box-shadow:0 0 24px rgba(16,185,129,.4); }
     .step h3 { font-size:1rem; margin-bottom:8px; }
     .step p { font-size:.85rem; color:var(--muted); }
 
@@ -302,35 +323,34 @@
       position:relative; overflow:hidden;
     }
     .price-card.featured {
-      border-color:var(--accent);
-      background:linear-gradient(135deg, rgba(59,130,246,.08) 0%, rgba(6,182,212,.04) 100%);
+      border-color:var(--cta);
+      background:linear-gradient(135deg, rgba(249,115,22,.08) 0%, rgba(0,153,255,.04) 100%);
+      animation:card-glow 3s ease-in-out infinite alternate;
+    }
+    @keyframes card-glow {
+      from { box-shadow:0 0 16px rgba(249,115,22,.15); }
+      to   { box-shadow:0 0 40px rgba(249,115,22,.35); }
     }
     .price-card.featured::before {
-      content:'Populaire';
-      position:absolute; top:16px; right:16px;
-      background:var(--accent); color:#fff;
+      content:'Populaire'; position:absolute; top:16px; right:16px;
+      background:var(--cta); color:#fff;
       font-size:.68rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
-      padding:4px 10px; border-radius:100px;
+      padding:4px 12px; border-radius:100px;
     }
-    .price-card:hover { transform:translateY(-4px); border-color:rgba(59,130,246,.4); }
+    .price-card:hover { transform:translateY(-4px); border-color:rgba(0,153,255,.4); }
     .price-icon {
       width:46px; height:46px; border-radius:12px;
-      background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.2);
+      background:rgba(0,153,255,.1); border:1px solid rgba(0,153,255,.2);
       display:flex; align-items:center; justify-content:center;
-      font-size:1.2rem; color:var(--accent); margin-bottom:18px;
+      font-size:1.2rem; color:var(--blue); margin-bottom:18px;
     }
     .price-card h3 { font-size:.98rem; margin-bottom:6px; }
-    .price-range {
-      font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800;
-      color:var(--accent); margin-bottom:12px; display:block;
-    }
+    .price-range { font-family:'Syne',sans-serif; font-size:1.5rem; font-weight:800; color:var(--cta); margin-bottom:12px; display:block; }
     .price-note { font-size:.8rem; color:var(--muted); }
     .price-card ul { list-style:none; margin-top:18px; display:flex; flex-direction:column; gap:8px; }
     .price-card ul li { font-size:.83rem; color:var(--text); display:flex; align-items:center; gap:8px; }
     .price-card ul li i { color:var(--green); font-size:.75rem; }
-    .price-disclaimer {
-      margin-top:36px; font-size:.82rem; color:var(--muted); text-align:center;
-    }
+    .price-disclaimer { margin-top:36px; font-size:.82rem; color:var(--muted); text-align:center; }
 
     /* ===== WHY US ===== */
     #about { border-top:1px solid var(--card-border); border-bottom:1px solid var(--card-border); }
@@ -340,12 +360,11 @@
       background:var(--card); border:1px solid var(--card-border);
       border-radius:16px; padding:24px 22px; transition:border-color .3s;
     }
-    .why-card:hover { border-color:rgba(59,130,246,.3); }
+    .why-card:hover { border-color:rgba(0,153,255,.3); }
     .why-icon {
       width:42px; height:42px; min-width:42px; border-radius:10px;
-      background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.2);
-      display:flex; align-items:center; justify-content:center;
-      color:var(--accent); font-size:1rem;
+      background:rgba(0,153,255,.1); border:1px solid rgba(0,153,255,.2);
+      display:flex; align-items:center; justify-content:center; color:var(--blue); font-size:1rem;
     }
     .why-card h4 { font-size:.95rem; margin-bottom:4px; }
     .why-card p { font-size:.84rem; color:var(--muted); }
@@ -355,60 +374,97 @@
       padding:7px 16px; border-radius:100px;
       font-size:.8rem; font-weight:600; color:var(--text); transition:all .25s;
     }
-    .zone-chip:hover { border-color:var(--accent); color:var(--accent); }
+    .zone-chip:hover { border-color:var(--cta); color:var(--cta); }
 
-    /* ===== TESTIMONIALS ===== */
+    /* ===== ABOUT TECHNICIEN ===== */
+    #technicien { background:var(--bg2); border-top:1px solid var(--card-border); border-bottom:1px solid var(--card-border); }
+    .tech-wrap {
+      display:grid; grid-template-columns:1fr 1.4fr; gap:60px; align-items:center;
+    }
+    .tech-avatar-wrap { text-align:center; }
+    .tech-avatar {
+      width:200px; height:200px; border-radius:50%; margin:0 auto 20px;
+      background:linear-gradient(135deg,var(--blue),var(--cyan));
+      display:flex; align-items:center; justify-content:center;
+      font-size:5rem; border:4px solid var(--card-border);
+      box-shadow:0 0 40px rgba(0,153,255,.25);
+      position:relative; overflow:hidden;
+    }
+    .tech-avatar::after {
+      content:''; position:absolute; inset:0; border-radius:50%;
+      background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.3));
+    }
+    .tech-name { font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:800; color:var(--head); margin-bottom:4px; }
+    .tech-title { font-size:.85rem; color:var(--blue); font-weight:600; }
+    .tech-bio { font-size:.95rem; color:var(--text); line-height:1.8; margin-bottom:28px; }
+    .tech-stats { display:flex; gap:24px; flex-wrap:wrap; margin-bottom:28px; }
+    .tech-stat { text-align:center; }
+    .tech-stat-num { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; color:var(--cta); display:block; }
+    .tech-stat-label { font-size:.75rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+    .tech-skills { display:flex; flex-wrap:wrap; gap:8px; }
+    .skill-chip {
+      background:rgba(0,153,255,.08); border:1px solid rgba(0,153,255,.2);
+      color:#60c8ff; font-size:.78rem; font-weight:600;
+      padding:5px 14px; border-radius:100px;
+    }
+    body.light .skill-chip { color:var(--blue); }
+
+    /* ===== TESTIMONIALS CAROUSEL ===== */
     #testimonials { background:var(--bg2); border-top:1px solid var(--card-border); border-bottom:1px solid var(--card-border); }
-    .testi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; }
+    .carousel { position:relative; overflow:hidden; }
+    .carousel-track {
+      display:flex; gap:20px;
+      transition:transform .5s cubic-bezier(.4,0,.2,1);
+    }
     .testi-card {
       background:var(--card); border:1px solid var(--card-border);
-      border-radius:20px; padding:28px 26px; transition:all .4s;
+      border-radius:20px; padding:32px 28px;
+      min-width:calc(33.33% - 14px); flex-shrink:0;
+      transition:border-color .3s;
     }
-    .testi-card:hover { border-color:rgba(59,130,246,.25); transform:translateY(-4px); }
-    .stars { color:#f59e0b; font-size:.85rem; margin-bottom:14px; letter-spacing:2px; }
-    .testi-card p { font-size:.9rem; color:var(--text); line-height:1.7; margin-bottom:20px; font-style:italic; }
+    .testi-card:hover { border-color:rgba(249,115,22,.25); }
+    .stars { color:#f59e0b; font-size:.9rem; margin-bottom:14px; letter-spacing:2px; }
+    .testi-card > p { font-size:.9rem; color:var(--text); line-height:1.75; margin-bottom:20px; font-style:italic; }
     .testi-author { display:flex; align-items:center; gap:12px; }
     .testi-avatar {
-      width:42px; height:42px; border-radius:50%;
-      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      width:44px; height:44px; border-radius:50%;
+      background:linear-gradient(135deg,var(--cta),var(--blue));
       display:flex; align-items:center; justify-content:center;
-      font-family:'Syne',sans-serif; font-weight:800; color:#fff; font-size:1rem;
+      font-family:'Syne',sans-serif; font-weight:800; color:#fff; font-size:1.1rem;
     }
     .testi-name { font-size:.88rem; font-weight:700; color:var(--head); }
     .testi-loc { font-size:.76rem; color:var(--muted); }
 
+    .carousel-controls { display:flex; align-items:center; justify-content:center; gap:16px; margin-top:32px; }
+    .carousel-btn {
+      width:44px; height:44px; border-radius:50%;
+      background:var(--card); border:1px solid var(--card-border);
+      color:var(--text); cursor:pointer; font-size:1rem;
+      display:flex; align-items:center; justify-content:center; transition:all .25s;
+    }
+    .carousel-btn:hover { background:var(--cta); border-color:var(--cta); color:#fff; }
+    .carousel-dots { display:flex; gap:8px; }
+    .carousel-dot {
+      width:8px; height:8px; border-radius:50%;
+      background:var(--card-border); cursor:pointer; transition:all .25s;
+    }
+    .carousel-dot.active { background:var(--cta); width:24px; border-radius:4px; }
+
     /* ===== FAQ ===== */
     .faq-list { display:flex; flex-direction:column; gap:12px; max-width:780px; }
-    .faq-item {
-      background:var(--card); border:1px solid var(--card-border);
-      border-radius:16px; overflow:hidden; transition:border-color .3s;
-    }
-    .faq-item.open { border-color:rgba(59,130,246,.3); }
-    .faq-q {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:20px 24px; cursor:pointer; gap:16px;
-    }
+    .faq-item { background:var(--card); border:1px solid var(--card-border); border-radius:16px; overflow:hidden; transition:border-color .3s; }
+    .faq-item.open { border-color:rgba(249,115,22,.35); }
+    .faq-q { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; cursor:pointer; gap:16px; }
     .faq-q span { font-weight:600; font-size:.95rem; color:var(--head); }
-    .faq-q i {
-      color:var(--muted); font-size:.9rem; min-width:16px;
-      transition:transform .3s;
-    }
-    .faq-item.open .faq-q i { transform:rotate(180deg); color:var(--accent); }
-    .faq-a {
-      max-height:0; overflow:hidden;
-      transition:max-height .4s ease, padding .3s;
-      padding:0 24px;
-    }
+    .faq-q i { color:var(--muted); font-size:.9rem; min-width:16px; transition:transform .3s; }
+    .faq-item.open .faq-q i { transform:rotate(180deg); color:var(--cta); }
+    .faq-a { max-height:0; overflow:hidden; transition:max-height .4s ease, padding .3s; padding:0 24px; }
     .faq-item.open .faq-a { max-height:200px; padding:0 24px 20px; }
     .faq-a p { font-size:.88rem; color:var(--muted); line-height:1.7; }
 
     /* ===== MAP ===== */
     #map-section { background:var(--bg2); border-top:1px solid var(--card-border); }
-    .map-wrap {
-      border-radius:20px; overflow:hidden;
-      border:1px solid var(--card-border);
-      height:360px;
-    }
+    .map-wrap { border-radius:20px; overflow:hidden; border:1px solid var(--card-border); height:360px; }
     .map-wrap iframe { width:100%; height:100%; border:none; filter:grayscale(.3); }
 
     /* ===== CONTACT ===== */
@@ -419,62 +475,46 @@
       background:var(--card); border:1px solid var(--card-border);
       border-radius:14px; padding:18px 20px;
     }
-    .contact-item i { font-size:1.2rem; color:var(--accent); width:22px; text-align:center; }
+    .contact-item i { font-size:1.2rem; color:var(--blue); width:22px; text-align:center; }
     .contact-item strong { display:block; color:var(--head); font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; margin-bottom:2px; }
     .contact-item a { font-size:.9rem; color:var(--text); transition:color .2s; }
-    .contact-item a:hover { color:var(--accent); }
-    .contact-form {
-      background:var(--card); border:1px solid var(--card-border);
-      border-radius:20px; padding:36px;
-    }
+    .contact-item a:hover { color:var(--blue); }
+    .contact-form { background:var(--card); border:1px solid var(--card-border); border-radius:20px; padding:36px; }
     .contact-form h3 { font-size:1.25rem; margin-bottom:6px; }
     .contact-form > p { font-size:.85rem; color:var(--muted); margin-bottom:28px; }
     .form-group { margin-bottom:18px; }
-    .form-group label {
-      display:block; font-size:.75rem; font-weight:700;
-      letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:8px;
-    }
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
+    .form-group label { display:block; font-size:.75rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+    .form-group input, .form-group textarea, .form-group select {
       width:100%; background:rgba(255,255,255,.04);
       border:1px solid var(--card-border); border-radius:10px;
       padding:12px 16px; font-family:'Space Grotesk',sans-serif;
       font-size:.9rem; color:var(--head); transition:border-color .3s;
       outline:none; resize:vertical; -webkit-appearance:none;
     }
-    body.light .form-group input,
-    body.light .form-group textarea,
-    body.light .form-group select { background:#f8fafc; color:#0a1628; }
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus { border-color:var(--accent); }
+    body.light .form-group input, body.light .form-group textarea, body.light .form-group select { background:#f8fafc; color:#0a1628; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color:var(--cta); }
     .form-group textarea { min-height:110px; }
-    .form-group select option { background:#0d1120; }
+    .form-group select option { background:#111827; }
     body.light .form-group select option { background:#fff; }
     .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
     .submit-btn {
-      width:100%; padding:14px; background:var(--accent); color:#fff;
+      width:100%; padding:14px; background:var(--cta); color:#fff;
       font-family:'Space Grotesk',sans-serif; font-size:.95rem; font-weight:700;
       border:none; border-radius:12px; cursor:pointer;
-      box-shadow:0 4px 24px rgba(59,130,246,.35); transition:all .3s; margin-top:4px;
+      box-shadow:0 4px 24px rgba(249,115,22,.35); transition:all .3s; margin-top:4px;
       display:flex; align-items:center; justify-content:center; gap:10px;
     }
-    .submit-btn:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(59,130,246,.5); }
+    .submit-btn:hover { transform:translateY(-2px); box-shadow:0 8px 32px rgba(249,115,22,.55); }
     .form-success { display:none; text-align:center; padding:40px 20px; }
     .form-success .check-icon { font-size:3.5rem; color:var(--green); margin-bottom:16px; display:block; }
     .form-success h4 { font-size:1.25rem; margin-bottom:8px; }
     .form-success p { font-size:.88rem; color:var(--muted); }
 
     /* ===== FOOTER ===== */
-    footer {
-      background:var(--bg2); border-top:1px solid var(--card-border);
-      padding:48px 40px 32px;
-    }
+    footer { background:var(--bg2); border-top:1px solid var(--card-border); padding:48px 40px 32px; }
     .footer-inner {
       max-width:1160px; margin:0 auto;
-      display:flex; align-items:center; justify-content:space-between;
-      flex-wrap:wrap; gap:24px;
+      display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:24px;
     }
     .footer-brand { font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; color:var(--head); }
     .footer-copy { font-size:.8rem; color:var(--muted); margin-top:4px; }
@@ -485,14 +525,13 @@
       display:flex; align-items:center; justify-content:center;
       color:var(--muted); font-size:1rem; transition:all .3s;
     }
-    .social-links a:hover { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .social-links a:hover { background:var(--cta); border-color:var(--cta); color:#fff; }
 
-    /* ===== COMBINED FAB ===== */
+    /* ===== FAB GROUP ===== */
     .fab-group {
       position:fixed; bottom:24px; right:24px; z-index:150;
       display:flex; flex-direction:column; align-items:flex-end; gap:14px;
     }
-    /* Sub-buttons (hidden by default) */
     .fab-item {
       display:flex; align-items:center; gap:10px;
       opacity:0; pointer-events:none;
@@ -502,47 +541,90 @@
     .fab-item:nth-child(1) { transition-delay:.05s; }
     .fab-item:nth-child(2) { transition-delay:.1s; }
     .fab-item:nth-child(3) { transition-delay:.15s; }
-    .fab-group.open .fab-item {
-      opacity:1; pointer-events:all;
-      transform:translateY(0) scale(1);
-    }
+    .fab-group.open .fab-item { opacity:1; pointer-events:all; transform:translateY(0) scale(1); }
     .fab-label {
-      background:var(--bg2); color:var(--head);
-      font-size:.78rem; font-weight:700;
-      padding:6px 12px; border-radius:8px;
-      border:1px solid var(--card-border);
-      box-shadow:0 2px 10px rgba(0,0,0,.2);
-      white-space:nowrap;
+      background:var(--bg2); color:var(--head); font-size:.78rem; font-weight:700;
+      padding:6px 12px; border-radius:8px; border:1px solid var(--card-border);
+      box-shadow:0 2px 10px rgba(0,0,0,.2); white-space:nowrap;
     }
     .fab-btn {
       width:52px; height:52px; border-radius:50%;
       display:flex; align-items:center; justify-content:center;
-      color:#fff; font-size:22px;
-      box-shadow:0 4px 16px rgba(0,0,0,.3);
-      transition:transform .2s; text-decoration:none; border:none; cursor:pointer;
-      flex-shrink:0;
+      color:#fff; font-size:22px; box-shadow:0 4px 16px rgba(0,0,0,.3);
+      transition:transform .2s; text-decoration:none; border:none; cursor:pointer; flex-shrink:0;
     }
     .fab-btn:hover { transform:scale(1.1); }
     .fab-btn.whatsapp { background:#25D366; box-shadow:0 4px 16px rgba(37,211,102,.45); }
-    .fab-btn.call     { background:var(--accent); box-shadow:0 4px 16px rgba(59,130,246,.45); }
-    .fab-btn.ai       { background:linear-gradient(135deg,#7c3aed,#4f46e5); box-shadow:0 4px 16px rgba(124,58,237,.45); }
-    /* Main trigger */
+    .fab-btn.call     { background:var(--blue); box-shadow:0 4px 16px rgba(0,153,255,.45); }
+    .fab-btn.ai       { background:linear-gradient(135deg,#7c3aed,#4f46e5); }
     .fab-main {
-      width:62px; height:62px; border-radius:50%;
-      background:linear-gradient(135deg,#1e40af,#3b82f6);
+      width:64px; height:64px; border-radius:50%;
+      background:linear-gradient(135deg,var(--cta),#ea580c);
       color:#fff; font-size:26px; border:none; cursor:pointer;
       display:flex; align-items:center; justify-content:center;
-      box-shadow:0 6px 24px rgba(59,130,246,.5);
+      box-shadow:0 6px 28px rgba(249,115,22,.55);
       transition:all .35s cubic-bezier(.34,1.56,.64,1);
+      position:relative;
     }
+    .fab-main::after {
+      content:''; position:absolute; inset:0; border-radius:50%;
+      background:inherit; z-index:-1;
+      animation:fab-pulse 2.5s ease-out infinite;
+    }
+    @keyframes fab-pulse { 0%{transform:scale(1);opacity:.6} 100%{transform:scale(1.9);opacity:0} }
     .fab-main:hover { transform:scale(1.08); }
     .fab-main i { transition:transform .35s ease; }
     .fab-group.open .fab-main { background:linear-gradient(135deg,#374151,#1f2937); box-shadow:0 6px 20px rgba(0,0,0,.4); }
+    .fab-group.open .fab-main::after { animation:none; }
     .fab-group.open .fab-main i { transform:rotate(45deg); }
 
-    /* ===== FADE-IN ===== */
+    /* ===== CHATBOT PANEL ===== */
+    .chat-panel {
+      position:fixed; bottom:104px; right:24px; z-index:160;
+      width:360px; max-height:520px;
+      background:var(--bg2); border:1px solid var(--card-border);
+      border-radius:24px; box-shadow:0 20px 60px rgba(0,0,0,.5);
+      display:flex; flex-direction:column;
+      transform:scale(0.9) translateY(20px); opacity:0; pointer-events:none;
+      transform-origin:bottom right; transition:all .3s cubic-bezier(.34,1.56,.64,1); overflow:hidden;
+    }
+    .chat-panel.open { transform:scale(1) translateY(0); opacity:1; pointer-events:all; }
+    .chat-header { background:linear-gradient(135deg,#7c3aed,#4f46e5); padding:16px 20px; display:flex; align-items:center; gap:12px; }
+    .chat-avatar { width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+    .chat-header-info { flex:1; }
+    .chat-header-info strong { display:block; color:#fff; font-size:.95rem; }
+    .chat-header-info span { font-size:.75rem; color:rgba(255,255,255,.7); }
+    .chat-close { background:none; border:none; color:rgba(255,255,255,.8); font-size:1.1rem; cursor:pointer; padding:4px; transition:color .2s; }
+    .chat-close:hover { color:#fff; }
+    .chat-messages { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px; max-height:320px; }
+    .chat-messages::-webkit-scrollbar { width:4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background:var(--card-border); border-radius:2px; }
+    .msg { max-width:82%; padding:10px 14px; border-radius:16px; font-size:.85rem; line-height:1.5; animation:msgIn .3s ease-out; }
+    @keyframes msgIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .msg.bot { background:var(--card); border:1px solid var(--card-border); color:var(--text); border-bottom-left-radius:4px; align-self:flex-start; }
+    .msg.user { background:linear-gradient(135deg,#7c3aed,#4f46e5); color:#fff; border-bottom-right-radius:4px; align-self:flex-end; }
+    .msg.typing { background:var(--card); border:1px solid var(--card-border); align-self:flex-start; padding:12px 16px; }
+    .typing-dots { display:flex; gap:4px; align-items:center; }
+    .typing-dots span { width:6px; height:6px; border-radius:50%; background:var(--muted); animation:dot 1.2s infinite; }
+    .typing-dots span:nth-child(2) { animation-delay:.2s; }
+    .typing-dots span:nth-child(3) { animation-delay:.4s; }
+    @keyframes dot { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+    .chat-quick { padding:0 16px 10px; display:flex; flex-wrap:wrap; gap:6px; }
+    .quick-btn { background:rgba(124,58,237,.1); border:1px solid rgba(124,58,237,.25); color:#a78bfa; font-size:.75rem; font-weight:600; padding:5px 12px; border-radius:100px; cursor:pointer; transition:all .2s; white-space:nowrap; }
+    .quick-btn:hover { background:rgba(124,58,237,.2); }
+    .chat-input-row { display:flex; gap:8px; padding:12px 16px; border-top:1px solid var(--card-border); }
+    .chat-input { flex:1; background:var(--card); border:1px solid var(--card-border); border-radius:12px; padding:10px 14px; font-family:'Space Grotesk',sans-serif; font-size:.85rem; color:var(--head); outline:none; transition:border-color .2s; }
+    .chat-input:focus { border-color:#7c3aed; }
+    .chat-send { width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg,#7c3aed,#4f46e5); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:.9rem; transition:all .2s; flex-shrink:0; }
+    .chat-send:hover { transform:scale(1.05); }
+    .chat-send:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+    /* ===== FADE ANIMATIONS ===== */
     .fade-in { opacity:0; transform:translateY(28px); transition:opacity .8s ease-out, transform .8s ease-out; }
     .fade-in.visible { opacity:1; transform:translateY(0); }
+    .fade-left { opacity:0; transform:translateX(-36px); transition:opacity .8s ease-out, transform .8s ease-out; }
+    .fade-right { opacity:0; transform:translateX(36px); transition:opacity .8s ease-out, transform .8s ease-out; }
+    .fade-left.visible, .fade-right.visible { opacity:1; transform:translate(0); }
 
     /* ===== RESPONSIVE ===== */
     @media(max-width:900px){
@@ -550,6 +632,8 @@
       .why-grid { grid-template-columns:1fr; }
       .steps { grid-template-columns:1fr; }
       .steps::before { display:none; }
+      .tech-wrap { grid-template-columns:1fr; }
+      .testi-card { min-width:calc(100% - 0px); }
     }
     @media(max-width:768px){
       nav { padding:14px 20px; }
@@ -559,128 +643,20 @@
       .stats-bar { gap:32px; padding:28px 24px; }
       .form-row { grid-template-columns:1fr; }
       footer { padding:36px 20px 24px; }
+      .testi-card { min-width:calc(100% - 0px); }
     }
     @media(max-width:480px){
       .hero-content h1 { font-size:2.4rem; }
       #home { padding:110px 24px 70px; }
-    }
-
-    /* ===== CHATBOT PANEL ===== */
-    .chat-panel {
-      position:fixed; bottom:100px; right:24px; z-index:160;
-      width:360px; max-height:520px;
-      background:var(--bg2); border:1px solid var(--card-border);
-      border-radius:24px; box-shadow:0 20px 60px rgba(0,0,0,.5);
-      display:flex; flex-direction:column;
-      transform:scale(0.9) translateY(20px);
-      opacity:0; pointer-events:none;
-      transform-origin:bottom right;
-      transition:all .3s cubic-bezier(.34,1.56,.64,1);
-      overflow:hidden;
-    }
-    .chat-panel.open {
-      transform:scale(1) translateY(0);
-      opacity:1; pointer-events:all;
-    }
-
-    .chat-header {
-      background:linear-gradient(135deg,#7c3aed,#4f46e5);
-      padding:16px 20px;
-      display:flex; align-items:center; gap:12px;
-    }
-    .chat-avatar {
-      width:38px; height:38px; border-radius:50%;
-      background:rgba(255,255,255,.2);
-      display:flex; align-items:center; justify-content:center;
-      font-size:1.1rem;
-    }
-    .chat-header-info { flex:1; }
-    .chat-header-info strong { display:block; color:#fff; font-size:.95rem; }
-    .chat-header-info span { font-size:.75rem; color:rgba(255,255,255,.7); }
-    .chat-close {
-      background:none; border:none; color:rgba(255,255,255,.8);
-      font-size:1.1rem; cursor:pointer; padding:4px;
-      transition:color .2s;
-    }
-    .chat-close:hover { color:#fff; }
-
-    .chat-messages {
-      flex:1; overflow-y:auto; padding:16px;
-      display:flex; flex-direction:column; gap:10px;
-      max-height:320px;
-    }
-    .chat-messages::-webkit-scrollbar { width:4px; }
-    .chat-messages::-webkit-scrollbar-track { background:transparent; }
-    .chat-messages::-webkit-scrollbar-thumb { background:var(--card-border); border-radius:2px; }
-
-    .msg {
-      max-width:82%; padding:10px 14px; border-radius:16px;
-      font-size:.85rem; line-height:1.5; animation:msgIn .3s ease-out;
-    }
-    @keyframes msgIn {
-      from { opacity:0; transform:translateY(8px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-    .msg.bot {
-      background:var(--card); border:1px solid var(--card-border);
-      color:var(--text); border-bottom-left-radius:4px; align-self:flex-start;
-    }
-    .msg.user {
-      background:linear-gradient(135deg,#7c3aed,#4f46e5);
-      color:#fff; border-bottom-right-radius:4px; align-self:flex-end;
-    }
-    .msg.typing {
-      background:var(--card); border:1px solid var(--card-border);
-      align-self:flex-start; padding:12px 16px;
-    }
-    .typing-dots { display:flex; gap:4px; align-items:center; }
-    .typing-dots span {
-      width:6px; height:6px; border-radius:50%;
-      background:var(--muted); animation:dot 1.2s infinite;
-    }
-    .typing-dots span:nth-child(2) { animation-delay:.2s; }
-    .typing-dots span:nth-child(3) { animation-delay:.4s; }
-    @keyframes dot {
-      0%,60%,100% { transform:translateY(0); }
-      30% { transform:translateY(-6px); }
-    }
-
-    .chat-quick { padding:0 16px 10px; display:flex; flex-wrap:wrap; gap:6px; }
-    .quick-btn {
-      background:rgba(124,58,237,.1); border:1px solid rgba(124,58,237,.25);
-      color:#a78bfa; font-size:.75rem; font-weight:600;
-      padding:5px 12px; border-radius:100px; cursor:pointer;
-      transition:all .2s; white-space:nowrap;
-    }
-    .quick-btn:hover { background:rgba(124,58,237,.2); }
-
-    .chat-input-row {
-      display:flex; gap:8px; padding:12px 16px;
-      border-top:1px solid var(--card-border);
-    }
-    .chat-input {
-      flex:1; background:var(--card); border:1px solid var(--card-border);
-      border-radius:12px; padding:10px 14px;
-      font-family:'Space Grotesk',sans-serif; font-size:.85rem;
-      color:var(--head); outline:none; transition:border-color .2s;
-    }
-    .chat-input:focus { border-color:#7c3aed; }
-    .chat-send {
-      width:40px; height:40px; border-radius:12px;
-      background:linear-gradient(135deg,#7c3aed,#4f46e5);
-      border:none; color:#fff; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-      font-size:.9rem; transition:all .2s; flex-shrink:0;
-    }
-    .chat-send:hover { transform:scale(1.05); }
-    .chat-send:disabled { opacity:.5; cursor:not-allowed; transform:none; }
-
-    @media(max-width:480px){
-      .chat-panel { width:calc(100vw - 32px); left:16px; }
+      .hero-trust { gap:10px; }
+      .trust-badge { font-size:.72rem; padding:6px 12px; }
+      .chat-panel { width:calc(100vw - 32px); right:16px; }
     }
   </style>
 </head>
 <body>
+
+  <div id="progress-bar"></div>
 
   <!-- NAV -->
   <nav>
@@ -697,12 +673,8 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav-right">
-      <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme">
-        <i class="fas fa-moon"></i>
-      </button>
-      <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+      <button class="theme-btn" id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+      <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
     </div>
   </nav>
 
@@ -713,6 +685,7 @@
     <a href="#how" onclick="closeMenu()">Comment ça marche</a>
     <a href="#pricing" onclick="closeMenu()">Tarifs</a>
     <a href="#about" onclick="closeMenu()">À propos</a>
+    <a href="#technicien" onclick="closeMenu()">Le Technicien</a>
     <a href="#testimonials" onclick="closeMenu()">Avis</a>
     <a href="#contact" onclick="closeMenu()">Contact</a>
   </div>
@@ -722,20 +695,25 @@
     <div class="grid-bg"></div>
     <div class="orb orb1"></div>
     <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
     <div class="hero-content">
       <div class="badge fade-in">
         <div class="pulse-dot"></div>
-        Disponible à Yaoundé
+        Disponible à Yaoundé — 7j/7
       </div>
-      <h1 class="fade-in">Votre tech<br><span class="grad">à domicile</span></h1>
-      <p class="hero-sub fade-in">Dépannage PC, réseau WiFi, suppression virus — intervention rapide chez vous dans tout Yaoundé.</p>
+      <h1 class="fade-in">Dépannage Informatique<br><span class="grad-orange" id="typed-target"></span><span class="typed-cursor" id="typed-cursor"></span></h1>
+      <p class="hero-sub fade-in">PC en panne, virus, WiFi en galère ? On vient chez vous à Yaoundé — diagnostic gratuit, intervention le jour même.</p>
       <div class="hero-ctas fade-in">
-        <a href="https://wa.me/237678542955?text=Bonjour%20Run%20Off%20Tech%2C%20j%27ai%20un%20probl%C3%A8me%20avec%20mon%20ordinateur..." class="btn-primary">
-          <i class="fab fa-whatsapp"></i> WhatsApp
+        <a href="https://wa.me/237678542955?text=Bonjour%20Run%20Off%20Tech%2C%20j%27ai%20un%20probl%C3%A8me%20avec%20mon%20ordinateur..." class="btn-cta">
+          <i class="fab fa-whatsapp"></i> WhatsApp Maintenant
         </a>
-        <a href="#services" class="btn-ghost">
-          Voir les services <i class="fas fa-arrow-right"></i>
-        </a>
+        <a href="#pricing" class="btn-ghost">Voir les tarifs <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="hero-trust fade-in">
+        <div class="trust-badge"><i class="fas fa-bolt"></i> Réponse &lt; 10 min</div>
+        <div class="trust-badge"><i class="fas fa-home"></i> Intervention à domicile</div>
+        <div class="trust-badge"><i class="fas fa-check-circle"></i> Devis gratuit</div>
+        <div class="trust-badge"><i class="fas fa-star"></i> Satisfaction garantie</div>
       </div>
     </div>
   </section>
@@ -743,7 +721,7 @@
   <!-- STATS -->
   <div class="stats-bar">
     <div class="stat fade-in">
-      <span class="stat-num">5<span class="ac">–</span>10 min</span>
+      <span class="stat-num"><span data-target="10" data-suffix=" min">0</span></span>
       <span class="stat-label">Délai de réponse</span>
     </div>
     <div class="stat fade-in">
@@ -751,7 +729,7 @@
       <span class="stat-label">Intervention le jour même</span>
     </div>
     <div class="stat fade-in">
-      <span class="stat-num">100<span class="ac">%</span></span>
+      <span class="stat-num"><span data-target="100" data-suffix="%">0</span></span>
       <span class="stat-label">Devis gratuit</span>
     </div>
     <div class="stat fade-in">
@@ -764,79 +742,77 @@
   <section id="services">
     <div class="section">
       <span class="section-tag fade-in">Ce qu'on fait</span>
-      <h2 class="section-title fade-in">Nos Services<br>à Domicile</h2>
-      <p class="section-sub fade-in">Tous types de pannes, on se déplace chez vous. Prix transparents, aucune mauvaise surprise.</p>
-
+      <h2 class="section-title fade-in">Nos Services à Domicile</h2>
+      <p class="section-sub fade-in">On se déplace chez vous. Prix transparents, aucune mauvaise surprise.</p>
       <div class="services-grid">
-        <div class="service-card fade-in">
+        <div class="service-card fade-in" style="--delay:0s">
           <div class="service-icon"><i class="fas fa-laptop-medical"></i></div>
           <h3>Réparation PC & Laptop</h3>
           <p>Diagnostic complet, remplacement de pièces, PC lent, écran cassé, démarrage impossible.</p>
         </div>
-        <div class="service-card fade-in">
+        <div class="service-card fade-in" style="--delay:.12s">
           <div class="service-icon"><i class="fas fa-virus-slash"></i></div>
           <h3>Suppression Virus & Malware</h3>
           <p>Nettoyage complet du système, installation antivirus, optimisation des performances.</p>
         </div>
-        <div class="service-card fade-in">
+        <div class="service-card fade-in" style="--delay:.24s">
           <div class="service-icon"><i class="fas fa-wifi"></i></div>
           <h3>WiFi & Réseau</h3>
           <p>Configuration routeur, extension de couverture, réseau domestique ou de bureau.</p>
         </div>
-        <div class="service-card fade-in">
+        <div class="service-card fade-in" style="--delay:.36s">
           <div class="service-icon"><i class="fas fa-hdd"></i></div>
           <h3>Sauvegarde & Récupération</h3>
           <p>Backup de vos données importantes, récupération de fichiers perdus ou supprimés.</p>
         </div>
       </div>
-
       <div class="fade-in">
-        <span class="note-pill">
-          <i class="fas fa-shield-alt"></i>
-          Devis gratuit — Prix transparents — Garantie satisfaction
-        </span>
+        <span class="note-pill"><i class="fas fa-shield-alt"></i> Devis gratuit — Prix transparents — Garantie satisfaction</span>
       </div>
-
       <div class="section-cta fade-in">
-        <a href="#contact" class="btn-primary"><i class="fas fa-paper-plane"></i> Demander une intervention</a>
+        <a href="https://wa.me/237678542955?text=Bonjour%20Run%20Off%20Tech%2C%20j%27ai%20un%20probl%C3%A8me%20avec%20mon%20ordinateur..." class="btn-cta"><i class="fab fa-whatsapp"></i> Demander une intervention</a>
       </div>
     </div>
   </section>
 
-  <!-- HOW IT WORKS -->
+  <!-- WAVE -->
+  <div class="wave-divider"><svg viewBox="0 0 1440 60" preserveAspectRatio="none" height="60"><path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="var(--bg2)"/></svg></div>
+
+  <!-- HOW -->
   <section id="how">
     <div class="section">
       <span class="section-tag fade-in">Simple & rapide</span>
       <h2 class="section-title fade-in">Comment ça marche ?</h2>
-      <p class="section-sub fade-in">En 3 étapes, votre problème est réglé — sans stress, sans déplacement de votre part.</p>
-
+      <p class="section-sub fade-in">En 3 étapes, votre problème est réglé — sans stress.</p>
       <div class="steps">
-        <div class="step fade-in">
+        <div class="step fade-left">
           <div class="step-num">1</div>
           <h3>Vous nous contactez</h3>
-          <p>Via WhatsApp, appel ou le formulaire. Décrivez votre problème en quelques mots. On répond en 5–10 min.</p>
+          <p>Via WhatsApp, appel ou le formulaire. Décrivez votre problème. On répond en 5–10 min.</p>
         </div>
         <div class="step fade-in">
           <div class="step-num">2</div>
           <h3>On vient chez vous</h3>
-          <p>On fixe un rendez-vous à votre convenance. Le technicien se déplace directement à votre domicile ou bureau.</p>
+          <p>On fixe un rendez-vous à votre convenance. Le technicien se déplace à votre domicile.</p>
         </div>
-        <div class="step fade-in">
+        <div class="step fade-right">
           <div class="step-num">3</div>
           <h3>Problème résolu ✓</h3>
-          <p>Diagnostic, réparation, tests. Vous ne payez qu'après validation. Devis fourni avant tout travail.</p>
+          <p>Diagnostic, réparation, tests. Vous payez seulement après validation.</p>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- WAVE -->
+  <div class="wave-divider" style="transform:rotate(180deg)"><svg viewBox="0 0 1440 60" preserveAspectRatio="none" height="60"><path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="var(--bg2)"/></svg></div>
 
   <!-- PRICING -->
   <section id="pricing">
     <div class="section">
       <span class="section-tag fade-in">Transparent & honnête</span>
       <h2 class="section-title fade-in">Nos Tarifs</h2>
-      <p class="section-sub fade-in">Des prix clairs pour chaque service. Devis gratuit avant toute intervention — pas de surprise.</p>
-
+      <p class="section-sub fade-in">Des prix clairs. Devis gratuit avant toute intervention.</p>
       <div class="pricing-grid">
         <div class="price-card fade-in">
           <div class="price-icon"><i class="fas fa-search"></i></div>
@@ -883,10 +859,9 @@
           </ul>
         </div>
       </div>
-      <p class="price-disclaimer fade-in">* Les tarifs sont indicatifs. Le devis final est donné après diagnostic gratuit sur place.</p>
-
+      <p class="price-disclaimer fade-in">* Tarifs indicatifs. Devis final gratuit après diagnostic sur place.</p>
       <div class="section-cta fade-in">
-        <a href="#contact" class="btn-primary"><i class="fas fa-calendar-check"></i> Prendre rendez-vous</a>
+        <a href="https://wa.me/237678542955?text=Bonjour%20Run%20Off%20Tech%2C%20je%20voudrais%20prendre%20rendez-vous..." class="btn-cta"><i class="fas fa-calendar-check"></i> Prendre rendez-vous</a>
       </div>
     </div>
   </section>
@@ -895,57 +870,80 @@
   <section id="about">
     <div class="section">
       <span class="section-tag fade-in">Pourquoi nous</span>
-      <h2 class="section-title fade-in">Run Off Tech,<br>c'est qui ?</h2>
-      <p class="section-sub fade-in">Un technicien local, expérimenté, qui se déplace chez vous sans frais cachés.</p>
-
+      <h2 class="section-title fade-in">Run Off Tech, c'est qui ?</h2>
+      <p class="section-sub fade-in">Un technicien local, expérimenté, qui se déplace sans frais cachés.</p>
       <div class="why-grid">
         <div class="why-card fade-in">
           <div class="why-icon"><i class="fas fa-user-check"></i></div>
-          <div>
-            <h4>Technicien local expérimenté</h4>
-            <p>Basé à Yaoundé, je connais bien les quartiers et les besoins locaux.</p>
-          </div>
+          <div><h4>Technicien local expérimenté</h4><p>Basé à Yaoundé, je connais les quartiers et les besoins locaux.</p></div>
         </div>
         <div class="why-card fade-in">
           <div class="why-icon"><i class="fas fa-bolt"></i></div>
-          <div>
-            <h4>Intervention le jour même</h4>
-            <p>Si disponible, je me déplace le jour de votre appel ou message.</p>
-          </div>
+          <div><h4>Intervention le jour même</h4><p>Si disponible, je me déplace le jour de votre appel ou message.</p></div>
         </div>
         <div class="why-card fade-in">
           <div class="why-icon"><i class="fas fa-tags"></i></div>
-          <div>
-            <h4>Prix clairs, pas de surprise</h4>
-            <p>Devis gratuit avant toute intervention. Vous savez le prix avant de commencer.</p>
-          </div>
+          <div><h4>Prix clairs, pas de surprise</h4><p>Devis gratuit avant toute intervention. Vous savez le prix avant qu'on commence.</p></div>
         </div>
         <div class="why-card fade-in">
           <div class="why-icon"><i class="fas fa-tools"></i></div>
-          <div>
-            <h4>Matériel de qualité</h4>
-            <p>Pièces et accessoires fiables utilisés sur chaque intervention.</p>
-          </div>
+          <div><h4>Matériel de qualité</h4><p>Pièces et accessoires fiables utilisés sur chaque intervention.</p></div>
         </div>
       </div>
-
       <div style="margin-top:52px;">
         <span class="section-tag fade-in">Zones d'intervention</span>
         <div class="zones-wrap fade-in">
-          <span class="zone-chip">Bastos</span>
-          <span class="zone-chip">Hippodrome</span>
-          <span class="zone-chip">Essos</span>
-          <span class="zone-chip">Mvan</span>
-          <span class="zone-chip">Mvog-Ada</span>
-          <span class="zone-chip">Omnisport</span>
-          <span class="zone-chip">Biyem-Assi</span>
-          <span class="zone-chip">Centre-ville</span>
+          <span class="zone-chip">Bastos</span><span class="zone-chip">Hippodrome</span>
+          <span class="zone-chip">Essos</span><span class="zone-chip">Mvan</span>
+          <span class="zone-chip">Mvog-Ada</span><span class="zone-chip">Omnisport</span>
+          <span class="zone-chip">Biyem-Assi</span><span class="zone-chip">Centre-ville</span>
           <span class="zone-chip">& environs</span>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="section-cta fade-in">
-        <a href="#contact" class="btn-ghost"><i class="fas fa-map-marker-alt"></i> Vérifier ma zone</a>
+  <!-- WAVE -->
+  <div class="wave-divider"><svg viewBox="0 0 1440 60" preserveAspectRatio="none" height="60"><path d="M0,20 C480,60 960,0 1440,40 L1440,60 L0,60 Z" fill="var(--bg2)"/></svg></div>
+
+  <!-- ABOUT TECHNICIEN -->
+  <section id="technicien">
+    <div class="section">
+      <div class="tech-wrap">
+        <div class="tech-avatar-wrap fade-left">
+          <div class="tech-avatar">👨‍💻</div>
+          <div class="tech-name">Le Technicien</div>
+          <div class="tech-title">Fondateur · Run Off Tech</div>
+        </div>
+        <div class="fade-right">
+          <span class="section-tag">Votre technicien de confiance</span>
+          <h2 class="section-title">Passionné de tech,<br>au service de Yaoundé</h2>
+          <p class="tech-bio">
+            Technicien informatique basé à Yaoundé, je me déplace directement chez vous pour résoudre vos problèmes rapidement et efficacement. Ma mission : vous offrir un service professionnel, honnête et accessible — sans jargon, sans surprise sur la facture.
+          </p>
+          <div class="tech-stats">
+            <div class="tech-stat">
+              <span class="tech-stat-num">3+</span>
+              <span class="tech-stat-label">Années d'expérience</span>
+            </div>
+            <div class="tech-stat">
+              <span class="tech-stat-num">100+</span>
+              <span class="tech-stat-label">Clients satisfaits</span>
+            </div>
+            <div class="tech-stat">
+              <span class="tech-stat-num">7j/7</span>
+              <span class="tech-stat-label">Disponibilité</span>
+            </div>
+          </div>
+          <div class="tech-skills">
+            <span class="skill-chip">Windows 10/11</span>
+            <span class="skill-chip">Réseaux WiFi</span>
+            <span class="skill-chip">Sécurité PC</span>
+            <span class="skill-chip">Récupération données</span>
+            <span class="skill-chip">Hardware</span>
+            <span class="skill-chip">Antivirus</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -956,41 +954,54 @@
       <span class="section-tag fade-in">Ce qu'on dit de nous</span>
       <h2 class="section-title fade-in">Avis Clients</h2>
       <p class="section-sub fade-in">Des vrais gens, des vrais problèmes résolus à Yaoundé.</p>
-
-      <div class="testi-grid">
-        <div class="testi-card fade-in">
-          <div class="stars">★★★★★</div>
-          <p>"Mon PC ne démarrait plus depuis deux jours. Le technicien est venu le lendemain matin, a tout réparé en 1h. Prix honnête, très professionnel !"</p>
-          <div class="testi-author">
-            <div class="testi-avatar">M</div>
-            <div>
-              <div class="testi-name">Marie-Claire N.</div>
-              <div class="testi-loc">Bastos, Yaoundé</div>
+      <div class="carousel fade-in">
+        <div class="carousel-track" id="carousel-track">
+          <div class="testi-card">
+            <div class="stars">★★★★★</div>
+            <p>"Mon PC ne démarrait plus depuis deux jours. Le technicien est venu le lendemain matin, a tout réparé en 1h. Prix honnête, très professionnel !"</p>
+            <div class="testi-author">
+              <div class="testi-avatar">M</div>
+              <div><div class="testi-name">Marie-Claire N.</div><div class="testi-loc">Bastos, Yaoundé</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="stars">★★★★★</div>
+            <p>"WiFi instable depuis des semaines. Run Off Tech a reconfiguré tout le réseau en 2h. Maintenant ça passe partout dans la maison. Merci !"</p>
+            <div class="testi-author">
+              <div class="testi-avatar">P</div>
+              <div><div class="testi-name">Patrick F.</div><div class="testi-loc">Omnisport, Yaoundé</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="stars">★★★★★</div>
+            <p>"Laptop plein de virus, impossible de travailler. Diagnostic gratuit, nettoyage rapide, antivirus installé. Je recommande sans hésiter !"</p>
+            <div class="testi-author">
+              <div class="testi-avatar">A</div>
+              <div><div class="testi-name">Ange D.</div><div class="testi-loc">Biyem-Assi, Yaoundé</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="stars">★★★★★</div>
+            <p>"J'avais perdu toutes mes photos de famille. Il a récupéré 95% des fichiers en quelques heures. Incroyable travail, je suis très reconnaissant !"</p>
+            <div class="testi-author">
+              <div class="testi-avatar">S</div>
+              <div><div class="testi-name">Samuel K.</div><div class="testi-loc">Essos, Yaoundé</div></div>
+            </div>
+          </div>
+          <div class="testi-card">
+            <div class="stars">★★★★★</div>
+            <p>"Service rapide, prix correct, et le technicien explique bien ce qu'il fait. Mon PC tourne comme neuf ! Je recommande à tout mon quartier."</p>
+            <div class="testi-author">
+              <div class="testi-avatar">C</div>
+              <div><div class="testi-name">Christelle M.</div><div class="testi-loc">Mvan, Yaoundé</div></div>
             </div>
           </div>
         </div>
-        <div class="testi-card fade-in">
-          <div class="stars">★★★★★</div>
-          <p>"WiFi instable depuis des semaines. Run Off Tech a reconfiguré tout le réseau en moins de 2h. Maintenant ça passe partout dans la maison. Merci !"</p>
-          <div class="testi-author">
-            <div class="testi-avatar">P</div>
-            <div>
-              <div class="testi-name">Patrick F.</div>
-              <div class="testi-loc">Omnisport, Yaoundé</div>
-            </div>
-          </div>
-        </div>
-        <div class="testi-card fade-in">
-          <div class="stars">★★★★★</div>
-          <p>"Laptop plein de virus, impossible de travailler. Diagnostic gratuit, nettoyage rapide, antivirus installé. Je recommande sans hésiter !"</p>
-          <div class="testi-author">
-            <div class="testi-avatar">A</div>
-            <div>
-              <div class="testi-name">Ange D.</div>
-              <div class="testi-loc">Biyem-Assi, Yaoundé</div>
-            </div>
-          </div>
-        </div>
+      </div>
+      <div class="carousel-controls fade-in">
+        <button class="carousel-btn" id="carousel-prev"><i class="fas fa-chevron-left"></i></button>
+        <div class="carousel-dots" id="carousel-dots"></div>
+        <button class="carousel-btn" id="carousel-next"><i class="fas fa-chevron-right"></i></button>
       </div>
     </div>
   </section>
@@ -1001,50 +1012,13 @@
       <span class="section-tag fade-in">Questions fréquentes</span>
       <h2 class="section-title fade-in">FAQ</h2>
       <p class="section-sub fade-in">Tout ce que vous voulez savoir avant de nous appeler.</p>
-
       <div class="faq-list">
-        <div class="faq-item fade-in">
-          <div class="faq-q" onclick="toggleFaq(this)">
-            <span>Vous déplacez-vous le weekend ?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-a"><p>Oui, nous intervenons 7j/7 selon disponibilité. Envoyez un message WhatsApp pour confirmer un créneau le weekend.</p></div>
-        </div>
-        <div class="faq-item fade-in">
-          <div class="faq-q" onclick="toggleFaq(this)">
-            <span>Combien coûte le déplacement ?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-a"><p>Le déplacement est inclus dans le tarif de l'intervention pour les zones couvertes à Yaoundé. Aucun frais caché.</p></div>
-        </div>
-        <div class="faq-item fade-in">
-          <div class="faq-q" onclick="toggleFaq(this)">
-            <span>Combien de temps dure une intervention ?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-a"><p>La plupart des interventions durent entre 1h et 3h selon la complexité. Les cas nécessitant des pièces commandées peuvent prendre plus longtemps.</p></div>
-        </div>
-        <div class="faq-item fade-in">
-          <div class="faq-q" onclick="toggleFaq(this)">
-            <span>Est-ce que le devis est vraiment gratuit ?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-a"><p>Oui, le diagnostic et le devis sont 100% gratuits et sans engagement. Vous décidez librement d'accepter ou non avant qu'on commence le travail.</p></div>
-        </div>
-        <div class="faq-item fade-in">
-          <div class="faq-q" onclick="toggleFaq(this)">
-            <span>Quelles zones de Yaoundé couvrez-vous ?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-a"><p>Nous couvrons Bastos, Hippodrome, Essos, Mvan, Mvog-Ada, Omnisport, Biyem-Assi, le Centre-ville et les environs. Contactez-nous pour vérifier votre quartier.</p></div>
-        </div>
-        <div class="faq-item fade-in">
-          <div class="faq-q" onclick="toggleFaq(this)">
-            <span>Que se passe-t-il si le problème revient après ?</span>
-            <i class="fas fa-chevron-down"></i>
-          </div>
-          <div class="faq-a"><p>On assure un suivi après chaque intervention. Si le même problème revient rapidement, on revient vérifier gratuitement. Votre satisfaction est notre priorité.</p></div>
-        </div>
+        <div class="faq-item fade-in"><div class="faq-q" onclick="toggleFaq(this)"><span>Vous déplacez-vous le weekend ?</span><i class="fas fa-chevron-down"></i></div><div class="faq-a"><p>Oui, nous intervenons 7j/7 selon disponibilité. Envoyez un message WhatsApp pour confirmer un créneau le weekend.</p></div></div>
+        <div class="faq-item fade-in"><div class="faq-q" onclick="toggleFaq(this)"><span>Combien coûte le déplacement ?</span><i class="fas fa-chevron-down"></i></div><div class="faq-a"><p>Le déplacement est inclus dans le tarif de l'intervention pour les zones couvertes à Yaoundé. Aucun frais caché.</p></div></div>
+        <div class="faq-item fade-in"><div class="faq-q" onclick="toggleFaq(this)"><span>Combien de temps dure une intervention ?</span><i class="fas fa-chevron-down"></i></div><div class="faq-a"><p>La plupart des interventions durent entre 1h et 3h selon la complexité. Les cas nécessitant des pièces commandées peuvent prendre plus longtemps.</p></div></div>
+        <div class="faq-item fade-in"><div class="faq-q" onclick="toggleFaq(this)"><span>Est-ce que le devis est vraiment gratuit ?</span><i class="fas fa-chevron-down"></i></div><div class="faq-a"><p>Oui, le diagnostic et le devis sont 100% gratuits et sans engagement. Vous décidez librement d'accepter ou non avant qu'on commence le travail.</p></div></div>
+        <div class="faq-item fade-in"><div class="faq-q" onclick="toggleFaq(this)"><span>Quelles zones de Yaoundé couvrez-vous ?</span><i class="fas fa-chevron-down"></i></div><div class="faq-a"><p>Nous couvrons Bastos, Hippodrome, Essos, Mvan, Mvog-Ada, Omnisport, Biyem-Assi, le Centre-ville et les environs.</p></div></div>
+        <div class="faq-item fade-in"><div class="faq-q" onclick="toggleFaq(this)"><span>Que se passe-t-il si le problème revient après ?</span><i class="fas fa-chevron-down"></i></div><div class="faq-a"><p>On assure un suivi après chaque intervention. Si le même problème revient rapidement, on revient vérifier gratuitement.</p></div></div>
       </div>
     </div>
   </section>
@@ -1056,10 +1030,7 @@
       <h2 class="section-title fade-in">On intervient à Yaoundé</h2>
       <p class="section-sub fade-in">Contactez-nous pour confirmer votre quartier.</p>
       <div class="map-wrap fade-in">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127481.50584461424!2d11.4557!3d3.8480!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x108bcf7a309a7977%3A0x7f00e47f3e5e30a7!2sYaound%C3%A9%2C%20Cameroun!5e0!3m2!1sfr!2sfr!4v1700000000000!5m2!1sfr!2sfr"
-          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127481.50584461424!2d11.4557!3d3.8480!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x108bcf7a309a7977%3A0x7f00e47f3e5e30a7!2sYaound%C3%A9%2C%20Cameroun!5e0!3m2!1sfr!2sfr!4v1700000000000!5m2!1sfr!2sfr" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
     </div>
   </section>
@@ -1070,52 +1041,20 @@
       <span class="section-tag fade-in">On vous répond vite</span>
       <h2 class="section-title fade-in">Contactez-nous</h2>
       <p class="section-sub fade-in">Décrivez votre problème, on vous répond en 5–10 min !</p>
-
       <div class="contact-wrap">
         <div class="contact-info fade-in">
-          <div class="contact-item">
-            <i class="fab fa-whatsapp"></i>
-            <div>
-              <strong>WhatsApp / Appel</strong>
-              <a href="tel:+237678542955">+237 678 542 955</a>
-            </div>
-          </div>
-          <div class="contact-item">
-            <i class="fab fa-facebook"></i>
-            <div>
-              <strong>Facebook</strong>
-              <a href="https://www.facebook.com/profile.php?id=61588287332524" target="_blank">Run Off Tech</a>
-            </div>
-          </div>
-          <div class="contact-item">
-            <i class="fab fa-instagram"></i>
-            <div>
-              <strong>Instagram</strong>
-              <a href="https://instagram.com/runofftech" target="_blank">@runofftech</a>
-            </div>
-          </div>
-          <div class="contact-item">
-            <i class="fas fa-map-marker-alt"></i>
-            <div>
-              <strong>Zone</strong>
-              Yaoundé, Cameroun
-            </div>
-          </div>
+          <div class="contact-item"><i class="fab fa-whatsapp"></i><div><strong>WhatsApp / Appel</strong><a href="tel:+237678542955">+237 678 542 955</a></div></div>
+          <div class="contact-item"><i class="fab fa-facebook"></i><div><strong>Facebook</strong><a href="https://www.facebook.com/profile.php?id=61588287332524" target="_blank">Run Off Tech</a></div></div>
+          <div class="contact-item"><i class="fab fa-instagram"></i><div><strong>Instagram</strong><a href="https://instagram.com/runofftech" target="_blank">@runofftech</a></div></div>
+          <div class="contact-item"><i class="fas fa-map-marker-alt"></i><div><strong>Zone</strong>Yaoundé, Cameroun</div></div>
         </div>
-
         <div class="contact-form fade-in">
           <h3>Formulaire de contact</h3>
           <p>On vous rappelle ou répond dès que possible.</p>
           <div id="form-fields">
             <div class="form-row">
-              <div class="form-group">
-                <label>Prénom</label>
-                <input type="text" id="f-name" placeholder="Ex: Jean" />
-              </div>
-              <div class="form-group">
-                <label>Téléphone</label>
-                <input type="tel" id="f-phone" placeholder="+237 6XX XXX XXX" />
-              </div>
+              <div class="form-group"><label>Prénom</label><input type="text" id="f-name" placeholder="Ex: Jean" /></div>
+              <div class="form-group"><label>Téléphone</label><input type="tel" id="f-phone" placeholder="+237 6XX XXX XXX" /></div>
             </div>
             <div class="form-group">
               <label>Type de problème</label>
@@ -1128,13 +1067,8 @@
                 <option>Autre</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Description</label>
-              <textarea id="f-msg" placeholder="Décrivez votre problème en quelques mots..."></textarea>
-            </div>
-            <button class="submit-btn" onclick="sendForm()">
-              <i class="fas fa-paper-plane"></i> Envoyer la demande
-            </button>
+            <div class="form-group"><label>Description</label><textarea id="f-msg" placeholder="Décrivez votre problème en quelques mots..."></textarea></div>
+            <button class="submit-btn" onclick="sendForm()"><i class="fas fa-paper-plane"></i> Envoyer la demande</button>
           </div>
           <div class="form-success" id="form-success">
             <i class="fas fa-check-circle check-icon"></i>
@@ -1154,17 +1088,13 @@
         <div class="footer-copy">© 2026 – Yaoundé, Cameroun. Tous droits réservés.</div>
       </div>
       <div class="social-links">
-        <a href="https://www.facebook.com/profile.php?id=61588287332524" target="_blank" aria-label="Facebook">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-        <a href="https://instagram.com/runofftech" target="_blank" aria-label="Instagram">
-          <i class="fab fa-instagram"></i>
-        </a>
+        <a href="https://www.facebook.com/profile.php?id=61588287332524" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://instagram.com/runofftech" target="_blank"><i class="fab fa-instagram"></i></a>
       </div>
     </div>
   </footer>
 
-  <!-- CHAT PANEL (stays separate so it can float above the FAB group) -->
+  <!-- CHAT PANEL -->
   <div class="chat-panel" id="chat-panel">
     <div class="chat-header">
       <div class="chat-avatar">🤖</div>
@@ -1183,266 +1113,243 @@
     </div>
     <div class="chat-input-row">
       <input class="chat-input" id="chat-input" type="text" placeholder="Décrivez votre problème..." />
-      <button class="chat-send" id="chat-send" onclick="chatSend()">
-        <i class="fas fa-paper-plane"></i>
-      </button>
+      <button class="chat-send" id="chat-send" onclick="chatSend()"><i class="fas fa-paper-plane"></i></button>
     </div>
   </div>
 
-  <!-- COMBINED FAB GROUP -->
+  <!-- FAB GROUP -->
   <div class="fab-group" id="fab-group">
     <div class="fab-item">
       <span class="fab-label">Diagnostic IA</span>
-      <button class="fab-btn ai" id="chat-trigger" aria-label="TechBot IA">
-        <i class="fas fa-robot"></i>
-      </button>
+      <button class="fab-btn ai" id="chat-trigger"><i class="fas fa-robot"></i></button>
     </div>
     <div class="fab-item">
       <span class="fab-label">Appeler</span>
-      <a href="tel:+237678542955" class="fab-btn call" aria-label="Appeler">
-        <i class="fas fa-phone"></i>
-      </a>
+      <a href="tel:+237678542955" class="fab-btn call"><i class="fas fa-phone"></i></a>
     </div>
     <div class="fab-item">
       <span class="fab-label">WhatsApp</span>
-      <a href="https://wa.me/237678542955?text=Bonjour%20Run%20Off%20Tech%2C%20j%27ai%20un%20probl%C3%A8me%20avec%20mon%20ordinateur..."
-         class="fab-btn whatsapp" aria-label="WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-      </a>
+      <a href="https://wa.me/237678542955?text=Bonjour%20Run%20Off%20Tech%2C%20j%27ai%20un%20probl%C3%A8me%20avec%20mon%20ordinateur..." class="fab-btn whatsapp"><i class="fab fa-whatsapp"></i></a>
     </div>
-    <button class="fab-main" id="fab-main" aria-label="Contact">
-      <i class="fas fa-plus"></i>
-    </button>
+    <button class="fab-main" id="fab-main"><i class="fas fa-plus"></i></button>
   </div>
 
   <script>
-    // THEME
+    // ===== THEME =====
     const toggleBtn = document.getElementById('theme-toggle');
     const body = document.body;
-    function setTheme(theme) {
-      if (theme === 'light') {
-        body.classList.add('light');
-        toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-      } else {
-        body.classList.remove('light');
-        toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-      }
-      localStorage.setItem('theme', theme);
+    function setTheme(t) {
+      body.classList.toggle('light', t==='light');
+      toggleBtn.innerHTML = t==='light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+      localStorage.setItem('theme', t);
     }
-    const saved = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setTheme(saved || (prefersDark ? 'dark' : 'light'));
-    toggleBtn.addEventListener('click', () => {
-      setTheme(body.classList.contains('light') ? 'dark' : 'light');
-    });
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-      if (!localStorage.getItem('theme')) setTheme(e.matches ? 'dark' : 'light');
-    });
+    setTheme(localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'));
+    toggleBtn.addEventListener('click', () => setTheme(body.classList.contains('light') ? 'dark' : 'light'));
 
-    // HAMBURGER MENU
+    // ===== HAMBURGER =====
     const hamburger = document.getElementById('hamburger');
     const mobileMenu = document.getElementById('mobile-menu');
-    hamburger.addEventListener('click', () => {
-      hamburger.classList.toggle('open');
-      mobileMenu.classList.toggle('open');
-    });
-    function closeMenu() {
-      hamburger.classList.remove('open');
-      mobileMenu.classList.remove('open');
-    }
+    hamburger.addEventListener('click', () => { hamburger.classList.toggle('open'); mobileMenu.classList.toggle('open'); });
+    function closeMenu() { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); }
 
-    // FADE-IN
-    const fadeEls = document.querySelectorAll('.fade-in');
-    if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-      }, { threshold: 0.1 });
-      fadeEls.forEach(el => observer.observe(el));
-    } else {
-      fadeEls.forEach(el => el.classList.add('visible'));
-    }
-    setTimeout(() => fadeEls.forEach(el => el.classList.add('visible')), 1000);
+    // ===== SCROLL PROGRESS =====
+    const progressBar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      progressBar.style.width = Math.min((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100, 100) + '%';
+    }, {passive:true});
 
-    // FAQ ACCORDION
-    function toggleFaq(el) {
-      const item = el.parentElement;
-      const isOpen = item.classList.contains('open');
-      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
-    }
+    // ===== PARALLAX =====
+    const gridBg = document.querySelector('.grid-bg');
+    window.addEventListener('scroll', () => { if(gridBg) gridBg.style.transform = `translateY(${window.scrollY*.25}px)`; }, {passive:true});
 
-    // ===== FAB GROUP TOGGLE =====
-    const fabGroup = document.getElementById('fab-group');
-    const fabMain  = document.getElementById('fab-main');
-    fabMain.addEventListener('click', () => {
-      fabGroup.classList.toggle('open');
-    });
-    // Close FAB when clicking elsewhere
-    document.addEventListener('click', e => {
-      if (!fabGroup.contains(e.target) && !document.getElementById('chat-panel').contains(e.target)) {
-        fabGroup.classList.remove('open');
+    // ===== TYPING =====
+    const typedTarget = document.getElementById('typed-target');
+    const phrases = ['à Domicile', 'Rapide & Fiable', 'à Yaoundé', 'Sans Surprise'];
+    let pIdx=0, cIdx=0, del=false;
+    function typeLoop() {
+      if(!typedTarget) return;
+      const cur = phrases[pIdx];
+      if(!del) {
+        typedTarget.textContent = cur.substring(0, cIdx+1); cIdx++;
+        if(cIdx===cur.length) { del=true; setTimeout(typeLoop,2000); return; }
+        setTimeout(typeLoop, 80);
+      } else {
+        typedTarget.textContent = cur.substring(0, cIdx-1); cIdx--;
+        if(cIdx===0) { del=false; pIdx=(pIdx+1)%phrases.length; setTimeout(typeLoop,300); return; }
+        setTimeout(typeLoop, 40);
       }
+    }
+    setTimeout(typeLoop, 1400);
+
+    // ===== COUNTER =====
+    function animateCounter(el) {
+      const target=parseInt(el.dataset.target), suffix=el.dataset.suffix||'', dur=1800, start=performance.now();
+      (function update(now) {
+        const p=Math.min((now-start)/dur,1), e=1-Math.pow(1-p,3);
+        el.textContent=Math.round(e*target)+suffix;
+        if(p<1) requestAnimationFrame(update);
+      })(start);
+    }
+
+    // ===== INTERSECTION OBSERVER =====
+    const allFades = document.querySelectorAll('.fade-in,.fade-left,.fade-right');
+    const counters = document.querySelectorAll('[data-target]');
+    const triggered = new Set();
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting) {
+          e.target.classList.add('visible');
+          e.target.querySelectorAll('[data-target]').forEach(c => { if(!triggered.has(c)){triggered.add(c);animateCounter(c);} });
+        }
+      });
+    }, {threshold:.1});
+    allFades.forEach(el => obs.observe(el));
+    counters.forEach(el => new IntersectionObserver(([e]) => { if(e.isIntersecting&&!triggered.has(el)){triggered.add(el);animateCounter(el);} },{threshold:.5}).observe(el));
+    setTimeout(() => allFades.forEach(el => el.classList.add('visible')), 1200);
+
+    // ===== ACTIVE NAV =====
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting) { navLinks.forEach(a => { a.classList.remove('active'); if(a.getAttribute('href')==='#'+e.target.id) a.classList.add('active'); }); } });
+    }, {threshold:.3}).observe(document.querySelector('#home'));
+    sections.forEach(s => new IntersectionObserver(([e]) => { if(e.isIntersecting) navLinks.forEach(a => { a.classList.remove('active'); if(a.getAttribute('href')==='#'+s.id) a.classList.add('active'); }); },{threshold:.3}).observe(s));
+
+    // ===== FAQ =====
+    function toggleFaq(el) {
+      const item=el.parentElement, isOpen=item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+      if(!isOpen) item.classList.add('open');
+    }
+
+    // ===== CAROUSEL =====
+    const track = document.getElementById('carousel-track');
+    const dotsWrap = document.getElementById('carousel-dots');
+    let carouselIdx = 0;
+    function getVisible() { return window.innerWidth <= 768 ? 1 : window.innerWidth <= 900 ? 1 : 3; }
+    function totalSlides() { return track ? track.children.length : 0; }
+    function maxIdx() { return Math.max(0, totalSlides() - getVisible()); }
+
+    function buildDots() {
+      if(!dotsWrap) return;
+      dotsWrap.innerHTML = '';
+      const n = maxIdx() + 1;
+      for(let i=0;i<n;i++) {
+        const d=document.createElement('div');
+        d.className='carousel-dot'+(i===0?' active':'');
+        d.onclick=()=>goTo(i);
+        dotsWrap.appendChild(d);
+      }
+    }
+    function goTo(idx) {
+      if(!track) return;
+      carouselIdx=Math.max(0,Math.min(idx,maxIdx()));
+      const cardW = track.children[0]?.offsetWidth+20 || 0;
+      track.style.transform=`translateX(-${carouselIdx*cardW}px)`;
+      document.querySelectorAll('.carousel-dot').forEach((d,i)=>d.classList.toggle('active',i===carouselIdx));
+    }
+    document.getElementById('carousel-prev')?.addEventListener('click',()=>goTo(carouselIdx-1));
+    document.getElementById('carousel-next')?.addEventListener('click',()=>goTo(carouselIdx+1));
+    window.addEventListener('resize',()=>{buildDots();goTo(carouselIdx);});
+    buildDots(); goTo(0);
+
+    // Auto-advance carousel
+    setInterval(()=>goTo(carouselIdx>=maxIdx()?0:carouselIdx+1), 5000);
+
+    // ===== FAB GROUP =====
+    const fabGroup = document.getElementById('fab-group');
+    document.getElementById('fab-main').addEventListener('click', ()=>fabGroup.classList.toggle('open'));
+    document.addEventListener('click', e=>{
+      if(!fabGroup.contains(e.target)&&!document.getElementById('chat-panel').contains(e.target))
+        fabGroup.classList.remove('open');
     });
 
     // ===== CHATBOT =====
     const SHEET_API = "https://api.sheetbest.com/sheets/2ec1f612-6c88-43f4-8c65-05a9334cb233";
-    const chatHistory = [];
-    let chatOpen = false;
-    let isTyping = false;
+    const chatHistory=[]; let chatOpen=false, isTyping=false;
 
-    const SYSTEM_PROMPT = `Tu es TechBot, l'assistant IA de Run Off Tech — un service de dépannage informatique à domicile basé à Yaoundé, Cameroun.
-
-Ton rôle : aider les visiteurs à diagnostiquer leurs problèmes informatiques en posant des questions ciblées, puis proposer un diagnostic préliminaire.
-
+    const SYSTEM_PROMPT=`Tu es TechBot, l'assistant IA de Run Off Tech — service de dépannage informatique à domicile basé à Yaoundé, Cameroun.
+Ton rôle : aider les visiteurs à diagnostiquer leurs problèmes informatiques en posant des questions ciblées.
 Règles :
-- Réponds toujours en français (ou dans la langue du visiteur)
-- Pose UNE seule question à la fois pour affiner le diagnostic
+- Réponds toujours en français
+- Pose UNE seule question à la fois
 - Sois concis, chaleureux et professionnel
-- Après 3-4 échanges, donne un diagnostic clair et recommande de contacter Run Off Tech au +237 678 542 955 ou via WhatsApp pour une intervention à domicile
-- Ne donne jamais de prix — dis que le devis est gratuit sur place
-- Tu couvres : réparation PC/laptop, suppression virus, WiFi/réseau, récupération de données
-- Exemples de questions utiles : "Depuis quand ça se passe ?", "Est-ce que le PC démarre ?", "Tu as des messages d'erreur ?", "Il est lent partout ou sur certains programmes ?"`;
+- Après 3-4 échanges, donne un diagnostic et recommande de contacter Run Off Tech au +237 678 542 955
+- Ne donne jamais de prix — le devis est gratuit sur place
+- Tu couvres : réparation PC/laptop, virus, WiFi/réseau, récupération données`;
 
-    function openChat() {
-      chatOpen = true;
+    function openChat(){
+      chatOpen=true;
       document.getElementById('chat-panel').classList.add('open');
-      fabGroup.classList.remove('open'); // close the FAB menu
-      if (chatHistory.length === 0) {
-        setTimeout(() => addBotMsg("Bonjour ! 👋 Je suis TechBot, l'assistant IA de Run Off Tech. Quel problème avez-vous avec votre ordinateur ?"), 400);
-      }
+      fabGroup.classList.remove('open');
+      if(!chatHistory.length) setTimeout(()=>addBotMsg("Bonjour ! 👋 Je suis TechBot, l'assistant IA de Run Off Tech. Quel problème avez-vous avec votre ordinateur ?"),400);
     }
-
-    function closeChat() {
-      chatOpen = false;
-      document.getElementById('chat-panel').classList.remove('open');
-    }
-
-    document.getElementById('chat-trigger').addEventListener('click', () => openChat());
+    function closeChat(){ chatOpen=false; document.getElementById('chat-panel').classList.remove('open'); }
+    document.getElementById('chat-trigger').addEventListener('click', openChat);
     document.getElementById('chat-close').addEventListener('click', closeChat);
+    document.getElementById('chat-input').addEventListener('keydown', e=>{ if(e.key==='Enter') chatSend(); });
 
-    document.getElementById('chat-input').addEventListener('keydown', e => {
-      if (e.key === 'Enter') chatSend();
-    });
-
-    function addBotMsg(text) {
-      const msgs = document.getElementById('chat-messages');
-      const el = document.createElement('div');
-      el.className = 'msg bot';
-      el.textContent = text;
-      msgs.appendChild(el);
-      msgs.scrollTop = msgs.scrollHeight;
+    function addBotMsg(text){
+      const msgs=document.getElementById('chat-messages');
+      const el=document.createElement('div'); el.className='msg bot'; el.textContent=text;
+      msgs.appendChild(el); msgs.scrollTop=msgs.scrollHeight;
     }
-
-    function addUserMsg(text) {
-      const msgs = document.getElementById('chat-messages');
-      const el = document.createElement('div');
-      el.className = 'msg user';
-      el.textContent = text;
-      msgs.appendChild(el);
-      msgs.scrollTop = msgs.scrollHeight;
-      // Hide quick buttons after first message
-      document.getElementById('chat-quick').style.display = 'none';
+    function addUserMsg(text){
+      const msgs=document.getElementById('chat-messages');
+      const el=document.createElement('div'); el.className='msg user'; el.textContent=text;
+      msgs.appendChild(el); msgs.scrollTop=msgs.scrollHeight;
+      document.getElementById('chat-quick').style.display='none';
     }
-
-    function showTyping() {
-      const msgs = document.getElementById('chat-messages');
-      const el = document.createElement('div');
-      el.className = 'msg typing'; el.id = 'typing-indicator';
-      el.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
-      msgs.appendChild(el);
-      msgs.scrollTop = msgs.scrollHeight;
+    function showTyping(){
+      const msgs=document.getElementById('chat-messages');
+      const el=document.createElement('div'); el.className='msg typing'; el.id='typing-indicator';
+      el.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
+      msgs.appendChild(el); msgs.scrollTop=msgs.scrollHeight;
     }
+    function hideTyping(){ const el=document.getElementById('typing-indicator'); if(el) el.remove(); }
 
-    function hideTyping() {
-      const el = document.getElementById('typing-indicator');
-      if (el) el.remove();
+    async function chatSend(){
+      const input=document.getElementById('chat-input');
+      const text=input.value.trim(); if(!text||isTyping) return;
+      input.value=''; sendMessage(text);
     }
+    function quickSend(text){ sendMessage(text); }
 
-    async function chatSend() {
-      const input = document.getElementById('chat-input');
-      const text = input.value.trim();
-      if (!text || isTyping) return;
-      input.value = '';
-      sendMessage(text);
-    }
-
-    function quickSend(text) {
-      sendMessage(text);
-    }
-
-    async function sendMessage(text) {
-      isTyping = true;
-      document.getElementById('chat-send').disabled = true;
-      addUserMsg(text);
-      chatHistory.push({ role: 'user', content: text });
-
-      showTyping();
-
+    async function sendMessage(text){
+      isTyping=true; document.getElementById('chat-send').disabled=true;
+      addUserMsg(text); chatHistory.push({role:'user',content:text}); showTyping();
       try {
-        const res = await fetch('https://api.anthropic.com/v1/messages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 1000,
-            system: SYSTEM_PROMPT,
-            messages: chatHistory
-          })
+        const res=await fetch('https://api.anthropic.com/v1/messages',{
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,messages:chatHistory})
         });
-
-        const data = await res.json();
-        hideTyping();
-
-        const reply = data.content?.[0]?.text || "Désolé, une erreur s'est produite. Contactez-nous directement au +237 678 542 955.";
-        chatHistory.push({ role: 'assistant', content: reply });
-        addBotMsg(reply);
-
-        // Log to SheetBest after every exchange
-        logToSheet(text, reply);
-
-      } catch (err) {
-        hideTyping();
-        addBotMsg("Connexion impossible. Contactez-nous directement via WhatsApp ou au +237 678 542 955 !");
-      }
-
-      isTyping = false;
-      document.getElementById('chat-send').disabled = false;
+        const data=await res.json(); hideTyping();
+        const reply=data.content?.[0]?.text||"Désolé, une erreur s'est produite. Contactez-nous directement au +237 678 542 955.";
+        chatHistory.push({role:'assistant',content:reply}); addBotMsg(reply);
+        logToSheet(text,reply);
+      } catch(err){ hideTyping(); addBotMsg("Connexion impossible. Contactez-nous via WhatsApp ou au +237 678 542 955 !"); }
+      isTyping=false; document.getElementById('chat-send').disabled=false;
       document.getElementById('chat-input').focus();
     }
 
-    async function logToSheet(userMsg, botReply) {
+    async function logToSheet(userMsg,botReply){
       try {
-        await fetch(SHEET_API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            date: new Date().toLocaleString('fr-FR'),
-            message: `Client: "${userMsg}" → Bot: "${botReply.substring(0, 120)}..."`,
-            source: 'TechBot IA'
-          })
-        });
-      } catch(e) { /* silent fail */ }
+        await fetch(SHEET_API,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({date:new Date().toLocaleString('fr-FR'),message:`Client: "${userMsg}" → Bot: "${botReply.substring(0,120)}..."`,source:'TechBot IA'})});
+      } catch(e){}
     }
 
-    function sendForm() {
-      const name  = document.getElementById('f-name').value.trim();
-      const phone = document.getElementById('f-phone').value.trim();
-      const type  = document.getElementById('f-type').value;
-      const msg   = document.getElementById('f-msg').value.trim();
-      if (!name || !phone) {
-        alert('Veuillez renseigner votre prénom et téléphone.');
-        return;
-      }
-      const text = encodeURIComponent(
-        `Bonjour Run Off Tech !\n\n` +
-        `👤 Nom : ${name}\n` +
-        `📞 Téléphone : ${phone}\n` +
-        `🔧 Problème : ${type || 'Non précisé'}\n` +
-        `📝 Détails : ${msg || 'Aucun détail fourni'}`
-      );
-      window.open(`https://wa.me/237678542955?text=${text}`, '_blank');
-      document.getElementById('form-fields').style.display = 'none';
-      document.getElementById('form-success').style.display = 'block';
+    // ===== CONTACT FORM =====
+    function sendForm(){
+      const name=document.getElementById('f-name').value.trim();
+      const phone=document.getElementById('f-phone').value.trim();
+      const type=document.getElementById('f-type').value;
+      const msg=document.getElementById('f-msg').value.trim();
+      if(!name||!phone){ alert('Veuillez renseigner votre prénom et téléphone.'); return; }
+      const text=encodeURIComponent(`Bonjour Run Off Tech !\n\n👤 Nom : ${name}\n📞 Téléphone : ${phone}\n🔧 Problème : ${type||'Non précisé'}\n📝 Détails : ${msg||'Aucun détail fourni'}`);
+      window.open(`https://wa.me/237678542955?text=${text}`,'_blank');
+      document.getElementById('form-fields').style.display='none';
+      document.getElementById('form-success').style.display='block';
     }
   </script>
 </body>
